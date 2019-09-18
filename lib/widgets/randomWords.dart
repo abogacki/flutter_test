@@ -1,17 +1,18 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:my_app/widgets/randomWordTile.dart';
+import 'package:provider/provider.dart';
+
+import '../main.dart';
 
 class RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
-  final _saved = Set<WordPair>();
-  final _biggerFont = const TextStyle(fontSize: 18.0);
 
   Widget _buildSuggetsions() {
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
-        itemBuilder: /*1*/ (context, i) {
+        itemBuilder: (context, i) {
           if (i.isOdd) return Divider();
-
           final index = i ~/ 2;
           if (index >= _suggestions.length) {
             _suggestions.addAll(generateWordPairs().take(10));
@@ -21,12 +22,11 @@ class RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildRow(WordPair pair) {
-    final alreadySaved = _saved.contains(pair);
-    return ListTile(
-      title: Text(pair.asPascalCase, style: _biggerFont),
-      trailing: Icon(alreadySaved ? Icons.favorite : Icons.favorite_border,
-          color: alreadySaved ? Colors.red : null),
-    );
+    return Consumer<SavedWordPairModel>(builder: (context, savedModel, child) {
+      final alreadySaved = savedModel.isAlreadySaved(pair);
+      print(savedModel);
+      return RandomWordTile(pair, savedModel.changeSaved, alreadySaved);
+    });
   }
 
   @override
@@ -36,6 +36,7 @@ class RandomWordsState extends State<RandomWords> {
 }
 
 class RandomWords extends StatefulWidget {
+  final _saved = <WordPair>[];
   @override
   RandomWordsState createState() => RandomWordsState();
 }
