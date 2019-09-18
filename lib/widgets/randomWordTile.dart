@@ -16,8 +16,6 @@ class RandomWordTile extends StatelessWidget {
             color: _alreadySaved ? Colors.red : null),
         onTap: () {
           _onTap(_pair);
-          print(_onTap);
-          print(_pair);
         });
   }
 }
